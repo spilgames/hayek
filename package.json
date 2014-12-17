@@ -1,0 +1,24 @@
+{
+  "name": "microbic",
+  "version": "1.0.0",
+  "description": "Communication layer for asynchronous services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:spilgames/microbial.git"
+  },
+  "keywords": [
+    "services",
+    "microservices",
+    "soa"
+  ],
+  "author": "Alexandre Gravem",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/spilgames/microbial/issues"
+  },
+  "homepage": "https://github.com/spilgames/microbial"
+}
