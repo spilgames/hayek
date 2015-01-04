@@ -27,6 +27,6 @@
     "sinon": "^1.12.2"
   },
   "dependencies": {
-    "reactive-agent": "0.0.1"
+    "reactive-agent": "0.0.2"
   }
 }
