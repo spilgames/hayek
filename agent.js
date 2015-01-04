@@ -1,1 +1,1 @@
-module.export = require('reacitve-agent')
+module.export = require('reactive-agent')
