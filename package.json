@@ -1,6 +1,6 @@
 {
-  "name": "microbic",
-  "version": "1.0.0",
+  "name": "hayek",
+  "version": "0.0.1",
   "description": "Communication layer for asynchronous services",
   "main": "index.js",
   "scripts": {
@@ -20,5 +20,13 @@
   "bugs": {
     "url": "https://github.com/spilgames/microbial/issues"
   },
-  "homepage": "https://github.com/spilgames/microbial"
+  "homepage": "https://github.com/spilgames/microbial",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2"
+  },
+  "dependencies": {
+    "reactive-agent": "0.0.1"
+  }
 }
