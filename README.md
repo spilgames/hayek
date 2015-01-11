@@ -8,10 +8,8 @@ To create an agent just initialise it with a name and an URL pointing
 to the RabbitMQ broker.
 
 ```javascript
-var hayek = require('hayek');
-var agent = new hayek.Agent('UserState', {
-  rabbitmq: 'amqp://guest:guest@localhost:5672/hayek'
-});
+var Agent = require('reactive-agent');
+var agent = new Agent('Users', { rabbitmq: 'amqp://guest:guest@localhost:5672/topic' });
 ```
 
 ## Signals
@@ -29,14 +27,14 @@ Over the wire, the signal sent would look something like this:
 
 ```javascript
 { signal: 'UserCreated',
-  cid: 'e3066cd0-93aa-11e4-ba68-2fac4b47aefc',
-  uuid: 'e3066cd1-93aa-11e4-ba68-2fac4b47aefc',
-  timestamp: '2015-01-04T01:44:49.054+0000',
-  payload: { name: 'Alex Gravem' },
-  source: 'UserState' }
+cid: 'e3066cd0-93aa-11e4-ba68-2fac4b47aefc',
+uuid: 'e3066cd1-93aa-11e4-ba68-2fac4b47aefc',
+timestamp: '2015-01-04T01:44:49.054+0000',
+payload: { name: 'Alex Gravem' },
+source: 'Users' }
 ```
 
-Where **cid** stands for *correlation id* and is used to track the
+Where **cid** stands for *causation id* and is used to track the
 reactions to the signal from other agents and **source** is the name
 of the agent which created the signal.
 
@@ -56,12 +54,12 @@ Over the wire it would look like this:
 
 ```javascript
 { cid: '8e324810-93ae-11e4-ba68-2fac4b47aefc',
-  uuid: '8e324811-93ae-11e4-ba68-2fac4b47aefc',
-  timestamp: '2015-01-04T02:11:04.721+0100',
-  payload: { startsWith: 'A' },
-  source: 'UserAPI',
-  demand: 'UsersList',
-  solutions: {} }
+uuid: '8e324811-93ae-11e4-ba68-2fac4b47aefc',
+timestamp: '2015-01-04T02:11:04.721+0100',
+payload: { startsWith: 'A' },
+source: 'UserAPI',
+demand: 'UsersList',
+solutions: {} }
 ```
 
 The difference to signals is that demands have a map of solutions
@@ -75,8 +73,10 @@ and you need to update the search index every time a user is created.
 
 ```javascript
 var send = agent.output();
+var SearchIndexUpdated = agent.signal('SearchIndexUpdated');
 agent.input({signal: 'UserCreated'}).on('data', function(signal) {
   SearchIndex.update(signal.payload);
+  send(SearchIndexUpdated({}).causedBy(signal));
 });
 ```
 
@@ -91,10 +91,10 @@ a list of users.
 ```javascript
 var send = agent.output();
 agent.input({demand: 'UsersList'}).on('data', function(demand) {
-  if( demand.solutions.All ) return;
+  if( demand.solutions.get('List') ) return;
 
   var list = SearchIndex.list();
-  var resolved = demand.resolve('All', list);
+  var resolved = demand.resolve('List', list);
   send(resolved);
 });
 ```
@@ -117,7 +117,7 @@ agent.input({demand: 'UsersList'}).on('data', function(demand) {
   var filter = demand.payload.startsWith;
   if( !filter ) return;
 
-  var all = demand.solutions.All
+  var all = demand.solutions.get('List')
   if( !all ) return;
 
   var list = all.filter(function(user) {
@@ -159,15 +159,15 @@ send(UsersStartingWithA);
 
   var timeout = setTimeout(function() {
     proposals.removeAllListeners();
-    console.log("Could not filter, here's all users", solutions.All);
+    console.log("Could not filter, here's all users", solutions.get('List'));
   }, 200);
 
   proposals.on('data', function(demand) {
     solutions = solutions.merge(demand.solutions);
-    if( !solutions.ByName ) return;
+    if( !solutions.get('ByName') ) return;
     clearTimeout(timeout);
     proposals.removeAllListeners();
-    console.log("Your list", solutions.ByName);
+    console.log("Your list", solutions.get('ByName'));
   });
 })(UsersStartingWithA);
 ```

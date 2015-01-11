@@ -1,6 +1,6 @@
 {
   "name": "hayek",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Communication layer for asynchronous services",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "minimist": "^1.1.0",
-    "reactive-agent": "0.0.2"
+    "reactive-agent": "0.0.3",
+    "colors": "~1.0.3"
   }
 }
