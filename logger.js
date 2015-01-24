@@ -25,6 +25,7 @@ function formatLogPayload(payload) {
 
 function format(value) {
   var inspect = require('util').inspect
+  if( value === null || value === undefined ) return ''
   if( value.constructor.name === 'String' ) return value
   if( value.constructor.name === 'Number' ) return value
   return inspect(value)
