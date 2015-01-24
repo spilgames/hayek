@@ -8,7 +8,7 @@ To create an agent just initialise it with a name and an URL pointing
 to the RabbitMQ broker.
 
 ```javascript
-var Agent = require('reactive-agent');
+var Agent = require('hayek').Agent;
 var agent = new Agent('Users', { rabbitmq: 'amqp://guest:guest@localhost:5672/topic' });
 ```
 
